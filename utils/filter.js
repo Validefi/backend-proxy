@@ -1,4 +1,7 @@
-function filterTransaction(description = '') {
+const swap_handle_single = require('./swap_single');
+const LivePrice = require('../db/models/LivePrice');
+
+async function filterTransaction(description = '') {
     if (
         description.includes(' more ') ||
         description.includes('Cake-LP') ||
@@ -14,87 +17,69 @@ function filterTransaction(description = '') {
     }
 
     const [string_before, string_after] = description.split('for');
-    // const coins_before =
+    const [_, value_before, coins_before] = string_before.split(' ');
+    const [value_after, coins_after] = string_after.substr(1).split(' ');
+
+    const US_COINS = ['USDT', 'BUSD', 'USDC', 'UST'];
+
+    if (US_COINS.includes(coins_before) && US_COINS.includes(coins_after)) {
+        return {
+            skipped: true,
+        };
+    } else if (coins_before == coins_after) {
+        return {
+            skipped: true,
+        };
+    } else if (value_before == 0 || value_after == 0) {
+        return {
+            skipped: true,
+        };
+    } else {
+        const current_coin_before = await LivePrice.findOne({
+            where: { currency: coins_before },
+        });
+        const current_value_coins_before =
+            (current_coin_before && current_coin_before.get('value')) || 0;
+
+        const current_coin_after = await LivePrice.findOne({
+            where: { currency: coins_after },
+        });
+
+        const current_value_coins_after =
+            (current_coin_after && current_coin_after.get('value')) || 0;
+
+        const result = await swap_handle_single({
+            coinsBefore: coins_before,
+            valueBefore: value_before,
+            coinsAfter: coins_after,
+            valueAfter: value_after,
+            currentValueBefore: current_value_coins_before,
+            currentValueAfter: current_value_coins_after,
+        });
+
+        if (result.status == 'success') {
+            console.log('Success');
+            return {
+                skipped: false,
+                success: true,
+            };
+        } else {
+            console.log('Failed to update the value');
+            return {
+                skipped: false,
+                success: false,
+            };
+        }
+    }
 }
 
-/*
-def fn(description): #only send swap transactions' description
+module.exports = {
+    filterTransaction,
+};
 
-    k=0
-    #1st if block
-	if(description contains " more " or "Cake-LP" or " more"):
-
-      #to skip transactions with incomplete data
-
-      skip
-      #skip this transaction, no use
-      #1st if block ends
-
-
-
-    elif("count the number of 'and' in description">=2):
-      #to skip transactions with multiple swaps
-      skip
-
-
-    #now split the description into 2 strings, one before the word "for" and one after that.
-
-
-    string_before = "string in description before the word for"
-    string_after = "string in description after the word for"
-
-    #now extract the coin and value information from the above
-    coins_before = extract_coins_from_string_before
-    value_before = extract_value_from_string_before
-    coins_after = extract_coins_from_string_after
-    value_after = extract_value_from_string_after
-
-
-
-    #2nd if block
-    elif(coins_before contains {"USDT" or "BUSD" or "USDC" or "UST"} AND coins_after contains {"USDT" or "BUSD" or "USDC" or "UST"}):
-
-       #this is a stablecoin to stablecoin swap and hence ignore.
-
-       skip
-
-       #2nd if block ends
-
-    #3rd if block
-    elif(coins_before == coins_after):
-
-       #this is a wrong swap output and hence ignore.
-
-       skip
-
-       #3rd if block ends
-
-    #4th if block
-    elif(value_before or value_after == 0.00):
-
-       #this is a wrong swap output and hence ignore.
-
-       skip
-
-       #4th if block ends
-
-    else:
-
-      #fetch current coin values from db for all coins involved in the transaction.
-      curr_coins_before = "query the db and fetch current value of the before coin in db"
-      curr_coins_after = "query the db and fetch current value of the after coin in db"
-
-      #Now time to update the db for coin values
-
-      #if(coins_before[1]==None): #single swap detected!
-
-        #single swap function
-        k= swap_handle_single(coins_before[0], value_before[0], coins_after[0], value_after[0], curr_coins_before[0], curr_coins_after[0])
-
-     if(k==1):
-       print("Success!")
-     elif(k==0):
-       print("Skipped!")
-     elif(k!=1 and k!=0):
-       print("Failed to update the value!")
-*/
+// Swapped 827207920000000000 ETH for 5764118338705201000 WBNB
+// Swapped 0 SYRUP and 3 more for 0.0026 Cake and 5.1399 SYRUP
+// Swapped 0 UNCL for 0 WBNB
+// Swapped 0.01 WBNB for 372580049151.1716 LSHIBA
+// Swapped 9.1394 BUSD for 9504085
+// Swapped 8.6366 Cake for 152.1726 BUSD
