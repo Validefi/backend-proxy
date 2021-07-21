@@ -1,7 +1,33 @@
 const swap_handle_single = require('./swap_single');
 const LivePrice = require('../db/models/LivePrice');
+const { getCoin } = require('../db/getter/LivePrice');
+
+// Validate transactions - category swap
+function validateDescription(description) {
+    if (typeof description != 'string') return false;
+    if (description.substr(0, 7) != 'Swapped') {
+        return false;
+    }
+    const tokens = description.split(' ');
+    if (tokens.length != 6) {
+        return false;
+    }
+
+    if (!isNumber(tokens[1]) || !isNumber(tokens[4])) return false;
+
+    if (tokens[3] != 'for') return false;
+
+    return true;
+}
 
 async function filterTransaction(description = '') {
+    const validated = validateDescription(description);
+    if (!validated) {
+        return {
+            skipped: true,
+        };
+    }
+
     if (
         description.includes(' more ') ||
         description.includes('Cake-LP') ||
@@ -35,15 +61,11 @@ async function filterTransaction(description = '') {
             skipped: true,
         };
     } else {
-        const current_coin_before = await LivePrice.findOne({
-            where: { currency: coins_before },
-        });
+        const current_coin_before = await getCoin(coins_before);
         const current_value_coins_before =
             (current_coin_before && current_coin_before.get('value')) || 0;
 
-        const current_coin_after = await LivePrice.findOne({
-            where: { currency: coins_after },
-        });
+        const current_coin_after = await getCoin(coins_after);
 
         const current_value_coins_after =
             (current_coin_after && current_coin_after.get('value')) || 0;

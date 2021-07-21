@@ -1,24 +1,27 @@
 {
-  "name": "dummy-api",
-  "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev" : "node app.js"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "axios": "^0.21.1",
-    "cluster": "^0.7.7",
-    "cors": "^2.8.5",
-    "dotenv": "^10.0.0",
-    "express": "^4.17.1",
-    "forever-monitor": "^3.0.3",
-    "mysql": "^2.18.1",
-    "mysql2": "^2.2.5",
-    "sequelize": "^6.6.5",
-    "ws": "^7.4.6"
-  }
+    "name": "dummy-api",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "scripts": {
+        "test": "jest",
+        "dev": "node app.js"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "axios": "^0.21.1",
+        "cluster": "^0.7.7",
+        "cors": "^2.8.5",
+        "dotenv": "^10.0.0",
+        "express": "^4.17.1",
+        "forever-monitor": "^3.0.3",
+        "mysql": "^2.18.1",
+        "mysql2": "^2.2.5",
+        "sequelize": "^6.6.5",
+        "ws": "^7.4.6"
+    },
+    "devDependencies": {
+        "jest": "^27.0.6"
+    }
 }

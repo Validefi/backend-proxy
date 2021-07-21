@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const LivePrice = require('../db/models/LivePrice');
+const { getPrice } = require('../db/getter/LivePrice');
 const { filterTransaction } = require('../utils/filter');
 
 router.get('/', async (req, res) => {
@@ -10,9 +10,7 @@ router.get('/', async (req, res) => {
         });
     }
 
-    const value = (await LivePrice.findOne({ where: { currency } })).get(
-        'value'
-    );
+    const value = await getPrice(currency);
     return res.status(200).send({
         message: 'Success',
         value,
