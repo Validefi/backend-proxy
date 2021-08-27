@@ -2,7 +2,6 @@ const express = require('express');
 const RateLimit = require('express-rate-limit');
 const helmet = require('helmet');
 const cors = require('cors');
-const morgan = require('morgan');
 const app = express();
 
 // Set env variables in dev env
@@ -22,18 +21,15 @@ var apiLimiter = new RateLimit({
 
 // middleware
 app.use('/api/', apiLimiter); // activate limiter for api calls only
-app.use(morgan('tiny')); // server logger
 app.use(helmet()); // header security
 app.use(cors()); // cross origin resources
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json({ limit: '300kb' }));
 
 // api controllers/routers
-const users = require('./routes/users');
-const products = require('./routes/products');
+const users = require('./routes/user');
 
-app.use('/api/users', users);
-app.use('/api/products', products);
+app.use('/api/user', users);
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);
@@ -43,4 +39,4 @@ app.use(function (err, req, res, next) {
   });
 });
 
-app.listen(PORT, () => console.log('Server OK'));
+app.listen(PORT, () => console.log('Server running on PORT: ' + PORT));
