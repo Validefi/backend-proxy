@@ -2,7 +2,7 @@ const pool = require('../db');
 // const { validUsername } = require('../utils/regex');
 const { checkErrors } = require('../middleware/validate');
 
-const registerUser = async (req, res) => {
+const monitorWallet = async (req, res) => {
   checkErrors(req, (err, message) => {
     if (err) {
       // return res.status(422).json({ err, message });
@@ -25,7 +25,7 @@ const registerUser = async (req, res) => {
 
     res.json({
       err: false,
-      message: 'User registered',
+      message: 'Wallet set to monitored',
       // username: updateUsername.rows[0].user_name,
     });
   } catch (err) {
@@ -37,5 +37,5 @@ const registerUser = async (req, res) => {
 };
 
 module.exports = {
-  registerUser,
+  monitorWallet,
 };

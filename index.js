@@ -28,8 +28,10 @@ app.use(express.json({ limit: '300kb' }));
 
 // api controllers/routers
 const users = require('./routes/user');
+const wallet = require('./routes/wallet');
 
 app.use('/api/user', users);
+app.use('/api/wallet', wallet);
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);

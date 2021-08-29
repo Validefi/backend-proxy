@@ -1,13 +1,13 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
-const { registerUser } = require('../controllers/user');
+const { monitorWallet } = require('../controllers/user');
 
 router.post(
-  '/register',
+  '/monitor',
   body('address')
     .notEmpty()
     .withMessage('Please provide a valid wallet address'),
-  registerUser
+  monitorWallet
 );
 
 module.exports = router;
