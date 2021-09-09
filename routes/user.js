@@ -4,9 +4,7 @@ const { registerUser } = require('../controllers/user');
 
 router.post(
   '/register',
-  body('address')
-    .notEmpty()
-    .withMessage('Please provide a valid wallet address'),
+  body('address').notEmpty().withMessage('Please provide wallet address'),
   registerUser
 );
 

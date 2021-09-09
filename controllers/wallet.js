@@ -1,22 +1,21 @@
 const pool = require('../db');
-// const { validUsername } = require('../utils/regex');
-const { checkErrors } = require('../middleware/validate');
+const { checkErrors, validWalletAddress } = require('../middleware/validate');
 
 const monitorWallet = async (req, res) => {
   checkErrors(req, (err, message) => {
     if (err) {
-      // return res.status(422).json({ err, message });
+      return res.status(422).json({ err, message });
     }
   });
   try {
     const { address } = req.body;
 
-    // if (!validWalletAddress(address)) {
-    //   return res.json({
-    //     err: true,
-    //     message: 'address not supported, Please try another one.',
-    //   });
-    // }
+    if (!validWalletAddress(address)) {
+      return res.json({
+        err: true,
+        message: 'Wallet address not supported. Please try another one.',
+      });
+    }
 
     // await pool.query(
     //   'UPDATE MONITOR SET address = $1 WHERE user_address = $2',

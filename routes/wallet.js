@@ -4,9 +4,7 @@ const { monitorWallet } = require('../controllers/user');
 
 router.post(
   '/monitor',
-  body('address')
-    .notEmpty()
-    .withMessage('Please provide a valid wallet address'),
+  body('address').notEmpty().withMessage('Please provide wallet address'),
   monitorWallet
 );
 
