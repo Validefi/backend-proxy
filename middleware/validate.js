@@ -25,7 +25,7 @@ const validWalletAddress = (address) => {
 const UNIQUE_ERROR_CODE = 23505;
 
 module.exports = {
-  checkErrors,
+  // checkErrors,
   UNIQUE_ERROR_CODE,
   validWalletAddress,
 };
