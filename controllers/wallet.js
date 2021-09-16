@@ -1,12 +1,13 @@
 const pool = require('../db');
-const { checkErrors, validWalletAddress } = require('../middleware/validate');
+const { validWalletAddress } = require('../middleware/validate');
+// const { checkErrors, validWalletAddress } = require('../middleware/validate');
 
 const monitorWallet = async (req, res) => {
-  checkErrors(req, (err, message) => {
-    if (err) {
-      return res.status(422).json({ err, message });
-    }
-  });
+  // checkErrors(req, (err, message) => {
+  //   if (err) {
+  //     return res.status(422).json({ err, message });
+  //   }
+  // });
   try {
     const { address } = req.body;
 
