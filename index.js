@@ -32,6 +32,7 @@ const wallet = require('./routes/wallet');
 
 app.use('/api/user', users);
 app.use('/api/wallet', wallet);
+app.get('/', (req, res) => res.send('Welcome to ValiDefi!'));
 
 app.use(function (err, req, res, next) {
   res.status(err.status || 500);

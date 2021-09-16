@@ -1,6 +1,6 @@
 const router = require('express').Router();
 const { body } = require('express-validator');
-const { monitorWallet } = require('../controllers/user');
+const { monitorWallet } = require('../controllers/wallet');
 
 router.post(
   '/monitor',
